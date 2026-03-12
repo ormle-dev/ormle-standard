@@ -81,3 +81,5 @@ An LLM receiving this constraint knows to generate an `INNER JOIN`. Without it, 
     }
   ]
 }
+
+[ormle.com/Standard](https://www.ormle.com/Standard)
