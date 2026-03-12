@@ -1,0 +1,67 @@
+{
+  "entities": [
+    {
+      "name": "Employee",
+      "referenceScheme": "empId",
+      "isValueType": false,
+      "isEnum": false,
+      "sampleValues": ["Alice Chen", "Bob Martinez"]
+    },
+    {
+      "name": "Order",
+      "referenceScheme": "orderId",
+      "isValueType": false,
+      "isEnum": false,
+      "sampleValues": ["ORD-1001", "ORD-1002"]
+    },
+    {
+      "name": "OrderDate",
+      "isValueType": true,
+      "valueDataType": "Date"
+    },
+    {
+      "name": "Department",
+      "referenceScheme": "code",
+      "isValueType": false,
+      "isEnum": true,
+      "enumValues": ["Engineering", "Marketing", "Sales", "HR"]
+    }
+  ],
+  "factTypes": [
+    {
+      "reading": "Employee handles Order",
+      "inverseReading": "Order is handled by Employee",
+      "alternateReadings": ["Employee processes Order"],
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Employee",
+          "isUnique": false,
+          "isMandatory": false
+        },
+        {
+          "entityName": "Order",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Order has OrderDate",
+      "inverseReading": "OrderDate is of Order",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Order",
+          "isUnique": false,
+          "isMandatory": true
+        },
+        {
+          "entityName": "OrderDate",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    }
+  ]
+}
