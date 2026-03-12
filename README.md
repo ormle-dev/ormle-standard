@@ -2,6 +2,7 @@
 **A Formal Foundation for Semantic Data Representation and Machine-Reasoning over Relational Structures**
 
 **Status:** Published  ·  **Category:** Technical Specification  ·  **Publisher:** Ormle  ·  **Date:** March 2026
+[ormle.com/Standard](https://www.ormle.com/Standard/)
 
 ---
 
@@ -82,4 +83,4 @@ An LLM receiving this constraint knows to generate an `INNER JOIN`. Without it, 
   ]
 }
 
-[ormle.com/Standard](https://www.ormle.com/Standard)
+
