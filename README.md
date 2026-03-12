@@ -1,7 +1,7 @@
 # Ormle Knowledge Graph Specification (v1.0)
 **A Formal Foundation for Semantic Data Representation and Machine-Reasoning over Relational Structures**
 
-**Status:** Published  ·  **Category:** Technical Specification  ·  **Publisher:** Ormle  ·  **Date:** March 2026  ·  **Site:**[ormle.com/Standard](https://www.ormle.com/Standard/)
+**Status:** Published  ·  **Category:** Technical Specification  ·  **Publisher:** Ormle  ·  **Date:** March 2026  ·  **Site:** [ormle.com/Standard](https://www.ormle.com/Standard/)
 
 ---
 
