@@ -21,6 +21,7 @@
   - [2.6 Enumerated Types](#26-enumerated-types)
   - [2.7 Alternate Readings](#27-alternate-readings)
   - [2.8 Sample Values](#28-sample-values)
+  - [2.9 Role Names](#29-role-names)
 - [3. The Predicate Calculus of Ormle](#3-the-predicate-calculus-of-ormle)
   - [3.1 Atomic Predicates](#31-atomic-predicates)
   - [3.2 Inverse Readings](#32-inverse-readings)
@@ -124,6 +125,29 @@ Sample values serve two purposes for downstream reasoning:
 
 - **Disambiguation:** They clarify what an entity represents in the real world. An entity named `Item` could be a product, a menu item, or an invoice line. Sample values like `"Widget A"`, `"Gizmo Pro"` immediately resolve the ambiguity.
 - **Query grounding:** When an LLM generates example queries or validates output, concrete values provide realistic test data without requiring database access.
+
+### 2.9 Role Names
+
+A **Role Name** is an explicit override for the foreign key column name produced when a binary fact type maps to a relational schema. Ordinarily, when entity $B$ is referenced from entity $A$'s table, the FK column is named after $B$'s `referenceScheme`. A role name replaces this default:
+
+$$
+\text{FK column} = \begin{cases} \text{roleName} & \text{if declared} \\ B.\text{referenceScheme} & \text{otherwise} \end{cases}
+$$
+
+Role names are necessary in three situations:
+
+1. **Renamed foreign keys.** The child table uses a different column name than the parent's primary key. Example: `EventLog.ActorId` references `Identity.IdentityId`.
+2. **Multiple references to the same entity.** A single table references the same parent more than once. Example: `Flight` has both `DepartureAirportCode` and `ArrivalAirportCode`, both referencing `Airport.AirportCode`.
+3. **Self-referential relationships.** An entity references itself through a distinctly named column. Example: `Project.ParentProjectId` references `Project.ProjectId`.
+
+In the Ormle designer, role names are specified with the `(>roleName)` notation:
+
+- `Identity(>ActorId)` — sets the FK column name to `ActorId` for this relationship.
+- `Project(>ParentProjectId)` — disambiguates the self-join column.
+
+The `>` prefix is syntactically unambiguous: `.` denotes a reference scheme (the entity's own PK), while `>` denotes a role name (the FK column in the referencing table).
+
+In the serialized schema, role names appear as the `roleName` property on the relevant role object within a fact type.
 
 ---
 
@@ -254,6 +278,18 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
       "isValueType": false,
       "isEnum": true,
       "enumValues": ["Engineering", "Marketing", "Sales", "HR"]
+    },
+    {
+      "name": "EventLog",
+      "referenceScheme": "EventId",
+      "isValueType": false,
+      "isEnum": false
+    },
+    {
+      "name": "Identity",
+      "referenceScheme": "IdentityId",
+      "isValueType": false,
+      "isEnum": false
     }
   ],
   "factTypes": [
@@ -291,6 +327,24 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
           "isMandatory": true
         }
       ]
+    },
+    {
+      "reading": "EventLog records action by Identity",
+      "inverseReading": "Identity performs EventLog",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "EventLog",
+          "isUnique": true,
+          "isMandatory": true
+        },
+        {
+          "entityName": "Identity",
+          "roleName": "ActorId",
+          "isUnique": false,
+          "isMandatory": true
+        }
+      ]
     }
   ]
 }
@@ -305,6 +359,7 @@ In this representation:
 - The `valueDataType` of `"Date"` on OrderDate tells the LLM to use date functions.
 - The `enumValues` on Department provide a closed-world guarantee of valid instances.
 - The `sampleValues` on Employee and Order give concrete examples for disambiguation.
+- The `roleName` of `"ActorId"` on Identity's role in "EventLog records action by Identity" overrides the default FK column name. Without it, the FK column would be `IdentityId`; with it, the generated SQL uses `ActorId`.
 
 ---
 
@@ -319,6 +374,7 @@ A system is **Ormle-conformant** if it satisfies the following requirements:
 5. Value types declare a `valueDataType` from the normative set (Text, Number, Date, Boolean, Currency).
 6. Enumerated types export the complete set of allowed values as `enumValues`.
 7. The serialization format preserves the predicate structure, semantic enrichment (alternate readings, sample values), and is machine-parseable (JSON).
+8. Roles that produce foreign key columns with names differing from the referenced entity's reference scheme declare an explicit `roleName`.
 
 Conformant implementations ensure that any automated system consuming the schema can determine the correct join semantics, cardinality, and participation constraints for every relation—eliminating the structural inference that is the primary source of error in text-to-SQL generation.
 
