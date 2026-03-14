@@ -142,15 +142,6 @@ Role names are necessary in three situations:
 2. **Multiple references to the same entity.** A single table references the same parent more than once. Example: `Flight` has both `DepartureAirportCode` and `ArrivalAirportCode`, both referencing `Airport.AirportCode`.
 3. **Self-referential relationships.** An entity references itself through a distinctly named column. Example: `Project.ParentProjectId` references `Project.ProjectId`.
 
-In the Ormle designer, role names are specified with the `(>roleName)` notation:
-
-- `Identity(>ActorId)` — sets the FK column name to `ActorId` for this relationship.
-- `Project(>ParentProjectId)` — disambiguates the self-join column.
-
-The `>` prefix is syntactically unambiguous: `.` denotes a reference scheme (the entity's own PK), while `>` denotes a role name (the FK column in the referencing table).
-
-In the serialized schema, role names appear as the `roleName` property on the relevant role object within a fact type.
-
 ---
 
 ## 3. The Predicate Calculus of Ormle
