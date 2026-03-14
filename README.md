@@ -39,9 +39,11 @@
 
 ## Abstract
 
-This document defines the **Ormle Knowledge Graph Specification (v1.0)**, a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. The specification provides a semantic layer that bridges the gap between physical database metadata (DDL) and the conceptual schema required for deterministic machine reasoning.
+Large language models are increasingly employed for text-to-SQL generation, yet they operate on SQL Data Definition Language (DDL)—physical metadata that describes *how* data is stored, not *what* it means. This forces the model to infer join semantics, cardinality, participation constraints, and column roles from naming conventions alone, a process that is the primary source of errors in generated SQL.
 
-By formalizing entities, fact types, reference schemes, functional dependencies, existence constraints, data types, enumerated domains, alternate readings, and sample values as first-class citizens of the schema, the Ormle Standard enables large language models and automated systems to determine correct join semantics, column operations, and domain boundaries without inferential guesswork.
+This document defines the **Ormle Knowledge Graph Specification (v1.0)**, a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. Grounded in Object-Role Modeling (Halpin, 2006) and formalized with predicate calculus, the specification provides a semantic layer that bridges the gap between physical DDL and the conceptual schema required for deterministic machine reasoning.
+
+By formalizing entities, fact types, reference schemes, functional dependencies, existence constraints, data types, enumerated domains, alternate readings, sample values, and role names as first-class citizens of the schema, the Ormle Standard enables large language models and automated systems to determine correct join semantics, column operations, and domain boundaries without inferential guesswork. Eliminating structural inference from the reasoning pipeline reduces the error surface to semantic misinterpretation alone, removing the class of errors caused by ambiguous join paths, missing cardinality information, and unnamed foreign key relationships.
 
 ---
 
@@ -209,7 +211,7 @@ The combination of uniqueness constraints on roles in a binary fact type determi
 
 Conventional metadata management suffers from an **ontological collapse**. By treating DDL as a sufficient semantic source, practitioners commit a category error. DDL defines the **physical schema**—the mechanism of storage—but remains silent on the **conceptual schema**—the nature of the facts being stored.
 
-A `FOREIGN KEY` constraint in SQL enforces referential integrity but does not express the predicate. Consider:
+This distinction is not new. Codd (1970) argued for separating data representation from storage; Chen (1976) formalized it with the Entity-Relationship model; Halpin (1989–2006) advanced it with Object-Role Modeling, grounding conceptual schemas in natural-language predicates. Yet the gap persists—a `FOREIGN KEY` constraint in SQL enforces referential integrity but does not express the predicate. Consider:
 
 ```sql
 ALTER TABLE Orders
@@ -364,6 +366,8 @@ In this representation:
 ---
 
 ## 8. Conformance
+
+The JSON structure defined in Section 7 constitutes the **normative serialization format** of the Ormle Standard. Any system that produces or consumes schemas in this format is subject to the conformance requirements below.
 
 A system is **Ormle-conformant** if it satisfies the following requirements:
 
