@@ -1,6 +1,6 @@
 # Ormle Knowledge Graph Specification (v1.0)
 
-**A Formal Foundation for Semantic Data Representation and Machine-Reasoning over Relational Structures**
+**A Formal Foundation for GRAM—Graph-Rule Analytical Mapping—and Deterministic Machine-Reasoning over Relational Structures**
 
 `v1.0` · March 2026
 
@@ -22,7 +22,7 @@
   - [2.7 Alternate Readings](#27-alternate-readings)
   - [2.8 Sample Values](#28-sample-values)
   - [2.9 Role Names](#29-role-names)
-- [3. The Predicate Calculus of Ormle](#3-the-predicate-calculus-of-ormle)
+- [3. The Predicate Calculus of GRAM](#3-the-predicate-calculus-of-gram)
   - [3.1 Atomic Predicates](#31-atomic-predicates)
   - [3.2 Inverse Readings](#32-inverse-readings)
 - [4. Constraint Formalization](#4-constraint-formalization)
@@ -41,7 +41,7 @@
 
 Large language models are increasingly employed for text-to-SQL generation, yet they operate on SQL Data Definition Language (DDL)—physical metadata that describes *how* data is stored, not *what* it means. This forces the model to infer join semantics, cardinality, participation constraints, and column roles from naming conventions alone, a process that is the primary source of errors in generated SQL.
 
-This document defines the **Ormle Knowledge Graph Specification (v1.0)**, a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. Grounded in Object-Role Modeling (Halpin, 2006) and formalized with predicate calculus, the specification provides a semantic layer that bridges the gap between physical DDL and the conceptual schema required for deterministic machine reasoning.
+This document defines the **Ormle Knowledge Graph Specification (v1.0)**, a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. Grounded in Object-Role Modeling (Halpin, 2006) and formalized with predicate calculus, the specification provides the formal foundation for GRAM (Graph-Rule Analytical Mapping)—a semantic layer that bridges the gap between physical DDL and the conceptual schema required for deterministic machine reasoning.
 
 By formalizing entities, fact types, reference schemes, functional dependencies, existence constraints, data types, enumerated domains, alternate readings, sample values, and role names as first-class citizens of the schema, the Ormle Standard enables large language models and automated systems to determine correct join semantics, column operations, and domain boundaries without inferential guesswork. Eliminating structural inference from the reasoning pipeline reduces the error surface to semantic misinterpretation alone, removing the class of errors caused by ambiguous join paths, missing cardinality information, and unnamed foreign key relationships.
 
@@ -51,7 +51,7 @@ By formalizing entities, fact types, reference schemes, functional dependencies,
 
 Modern large language models (LLMs) exhibit systematic failure in text-to-SQL tasks because SQL Data Definition Language (DDL) constitutes **physical metadata**: it describes *how* data is stored, not *what* it means. A column definition such as `CustomerID INT NOT NULL` is a physical constraint. It provides no semantic information about the role that `CustomerID` plays in the business domain.
 
-The Ormle Standard addresses this deficiency by representing a database as a collection of **Fact Types**—binary relations expressed as natural-language readings—augmented with formally defined constraints. This representation allows an LLM to *read* the schema rather than *infer* it, moving from stochastic interpretation to deterministic reasoning.
+The Ormle Standard addresses this deficiency by representing a database as a collection of **Fact Types**—binary relations expressed as natural-language readings—augmented with formally defined constraints. This representation allows an LLM to *read* the schema rather than *infer* it, moving from stochastic interpretation to the deterministic reasoning model known as **GRAM** (Graph-Rule Analytical Mapping).
 
 ---
 
@@ -60,6 +60,8 @@ The Ormle Standard addresses this deficiency by representing a database as a col
 ### 2.1 Entities and Value Types
 
 Let $\mathcal{E}$ denote the set of all **Entity Types** and $\mathcal{V}$ denote the set of all **Value Types**. An Entity Type represents a non-value object in the domain (e.g., `Employee`, `Order`). A Value Type represents a terminal property (e.g., `FirstName`, `OrderDate`).
+
+An Entity Type may optionally carry a **namespace** that represents the database schema qualifier (e.g., `dbo`, `Sales`). When present, the fully-qualified table name is `namespace.name`. Two entities sharing the same name but differing in namespace are considered distinct types.
 
 ### 2.2 Fact Types
 
@@ -81,7 +83,7 @@ A **Reference Scheme** defines how instances of an entity type are uniquely iden
 
 $$\text{ref}: E \to D_{\text{id}} \quad \text{such that } \forall a, b \in E : \text{ref}(a) = \text{ref}(b) \implies a = b$$
 
-where $D_{\text{id}}$ is the identifier domain (e.g., integer employee numbers, string codes). In the Ormle schema, the reference scheme is declared using the notation `Employee(.empId)`, rendering as *(.empId)* beneath the entity name on the diagram.
+where $D_{\text{id}}$ is the identifier domain (e.g., integer employee numbers, string codes). In a GRAM-compliant schema, the reference scheme is declared using the notation `Employee(empId)`, rendering as *(empId)* beneath the entity name on the diagram.
 
 Each entity has exactly one reference scheme. Additional attributes requiring uniqueness (e.g., email address) are modeled as separate fact types with uniqueness constraints, making them **alternate keys**.
 
@@ -144,11 +146,11 @@ Role names are necessary in three situations:
 
 ---
 
-## 3. The Predicate Calculus of Ormle
+## 3. The Predicate Calculus of GRAM
 
 ### 3.1 Atomic Predicates
 
-When a user defines a fact in the Ormle graph, they define the **membership criteria** for a relation. Each fact's `reading` property constitutes an **atomic predicate**. For a binary fact type between entities $E_1$ and $E_2$:
+When a user defines a fact in a GRAM graph, they define the **membership criteria** for a relation. Each fact's `reading` property constitutes an **atomic predicate**. For a binary fact type between entities $E_1$ and $E_2$:
 
 $$P(x, y) \quad \text{where } x \in E_1, \; y \in E_2$$
 
@@ -161,13 +163,13 @@ $$P(x, y) \quad \text{where } x \in E_1, \; y \in E_2$$
 
 ### 3.2 Inverse Readings
 
-For each binary Fact Type, the Ormle Standard explicitly captures the **Inverse Reading**, ensuring that the relation is not a directed pointer (as in a Foreign Key) but a **bi-directional logical assertion**. If the forward reading is *"Employee handles Order"*, the inverse is *"Order is handled by Employee"*. This duality enables an LLM to traverse the graph in either direction without ambiguity.
+For each binary Fact Type, the GRAM specification explicitly captures the **Inverse Reading**, ensuring that the relation is not a directed pointer (as in a Foreign Key) but a **bi-directional logical assertion**. If the forward reading is *"Employee handles Order"*, the inverse is *"Order is handled by Employee"*. This duality enables an LLM to traverse the graph in either direction without ambiguity.
 
 ---
 
 ## 4. Constraint Formalization
 
-Constraints in the Ormle Standard are not auxiliary metadata; they are **first-class logical laws** governing the behavior of each relation.
+Constraints in the GRAM specification are not auxiliary metadata; they are **first-class logical laws** governing the behavior of each relation.
 
 ### 4.1 Uniqueness Constraints and Functional Dependencies
 
@@ -175,7 +177,7 @@ The `isUnique` property on a role defines a constraint on the relation. If role 
 
 $$\forall x \in E_1,\; \forall y, z \in E_2 : \bigl(P(x, y) \land P(x, z)\bigr) \implies y = z$$
 
-This is not a database configuration option; it is a **logical law**. When an LLM interprets an Ormle-compliant graph, it does not guess join cardinality—it computes the **deterministic path** of the query. By capturing uniqueness at the role level, the specification explicitly identifies the **candidate keys** of every relation.
+This is not a database configuration option; it is a **logical law**. When an LLM interprets a GRAM-compliant graph, it does not guess join cardinality—it computes the **deterministic path** of the query. By capturing uniqueness at the role level, the specification explicitly identifies the **candidate keys** of every relation.
 
 ### 4.2 Mandatoriness and Existence Constraints
 
@@ -210,21 +212,21 @@ ALTER TABLE Orders
     FOREIGN KEY (EmpID) REFERENCES Employees(ID);
 ```
 
-This statement tells the database engine *"do not break the link."* It provides no information about what the link *means*—whether an employee *handles*, *approves*, or *delivers* the order. The Ormle Standard resolves this by binding every relation to an explicit natural-language predicate.
+This statement tells the database engine *"do not break the link."* It provides no information about what the link *means*—whether an employee *handles*, *approves*, or *delivers* the order. The GRAM specification resolves this by binding every relation to an explicit natural-language predicate.
 
 ---
 
 ## 6. Normative Comparison
 
-The following comparison illustrates the difference between physical metadata and an Ormle-compliant semantic representation for the query: *"How many orders were handled by each employee?"*
+The following comparison illustrates the difference between physical metadata and a GRAM-compliant semantic representation for the query: *"How many orders were handled by each employee?"*
 
 ### 6.1 DDL-Only Interpretation
 
 An LLM operating on DDL alone observes a nullable `EmpID` column in the `Orders` table. It must infer join semantics, potentially selecting a `LEFT JOIN` when an `INNER JOIN` is correct, miscounting null entries, or double-counting in misidentified many-to-many relationships.
 
-### 6.2 Ormle-Compliant Interpretation
+### 6.2 GRAM-Compliant Interpretation
 
-An LLM receiving the Ormle graph reads:
+An LLM receiving the GRAM graph reads:
 
 > "Employee handles Order. Each Order must be handled by exactly one Employee."
 
@@ -241,13 +243,14 @@ GROUP BY e.EmployeeName;
 
 ## 7. Schema Representation
 
-An Ormle-compliant schema is serialized as a JSON document. The following fragment illustrates a representative subset of the schema, including entities with reference schemes, data types, enums, sample values, and a fact type with alternate readings:
+A GRAM-compliant schema is serialized as a JSON document. The following fragment illustrates a representative subset of the schema, exercising every normative feature: entities with reference schemes and sample values, an optional `namespace` for database schema qualification (applicable only to non-value-type entities), value types spanning all five data types, a value type enum, an entity enum, a self-referential relationship with a role name, multiple references to the same entity, an alternate reading, and varied constraint patterns.
 
 ```json
 {
   "entities": [
     {
       "name": "Employee",
+      "namespace": "dbo",
       "referenceScheme": "empId",
       "isValueType": false,
       "isEnum": false,
@@ -261,9 +264,11 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
       "sampleValues": ["ORD-1001", "ORD-1002"]
     },
     {
-      "name": "OrderDate",
-      "isValueType": true,
-      "valueDataType": "Date"
+      "name": "Project",
+      "referenceScheme": "projectId",
+      "isValueType": false,
+      "isEnum": false,
+      "sampleValues": ["Apollo", "Horizon"]
     },
     {
       "name": "Department",
@@ -273,16 +278,36 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
       "enumValues": ["Engineering", "Marketing", "Sales", "HR"]
     },
     {
-      "name": "EventLog",
-      "referenceScheme": "EventId",
-      "isValueType": false,
-      "isEnum": false
+      "name": "FirstName",
+      "isValueType": true,
+      "valueDataType": "Text"
     },
     {
-      "name": "Identity",
-      "referenceScheme": "IdentityId",
-      "isValueType": false,
-      "isEnum": false
+      "name": "OrderDate",
+      "isValueType": true,
+      "valueDataType": "Date"
+    },
+    {
+      "name": "OrderTotal",
+      "isValueType": true,
+      "valueDataType": "Currency"
+    },
+    {
+      "name": "HeadCount",
+      "isValueType": true,
+      "valueDataType": "Number"
+    },
+    {
+      "name": "IsActive",
+      "isValueType": true,
+      "valueDataType": "Boolean"
+    },
+    {
+      "name": "OrderStatus",
+      "isValueType": true,
+      "valueDataType": "Text",
+      "isEnum": true,
+      "enumValues": ["Pending", "Shipped", "Delivered", "Cancelled"]
     }
   ],
   "factTypes": [
@@ -305,6 +330,75 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
       ]
     },
     {
+      "reading": "Employee submits Order",
+      "inverseReading": "Order is submitted by Employee",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Employee",
+          "roleName": "SubmittedById",
+          "isUnique": false,
+          "isMandatory": false
+        },
+        {
+          "entityName": "Order",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Employee has FirstName",
+      "inverseReading": "FirstName is of Employee",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Employee",
+          "isUnique": false,
+          "isMandatory": true
+        },
+        {
+          "entityName": "FirstName",
+          "isUnique": false,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Employee has IsActive",
+      "inverseReading": "IsActive is of Employee",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Employee",
+          "isUnique": false,
+          "isMandatory": true
+        },
+        {
+          "entityName": "IsActive",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Employee works for Department",
+      "inverseReading": "Department employs Employee",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Employee",
+          "isUnique": false,
+          "isMandatory": true
+        },
+        {
+          "entityName": "Department",
+          "isUnique": false,
+          "isMandatory": false
+        }
+      ]
+    },
+    {
       "reading": "Order has OrderDate",
       "inverseReading": "OrderDate is of Order",
       "arity": 2,
@@ -322,20 +416,71 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
       ]
     },
     {
-      "reading": "EventLog records action by Identity",
-      "inverseReading": "Identity performs EventLog",
+      "reading": "Order has OrderTotal",
+      "inverseReading": "OrderTotal is of Order",
       "arity": 2,
       "roles": [
         {
-          "entityName": "EventLog",
-          "isUnique": true,
+          "entityName": "Order",
+          "isUnique": false,
           "isMandatory": true
         },
         {
-          "entityName": "Identity",
-          "roleName": "ActorId",
+          "entityName": "OrderTotal",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Order has OrderStatus",
+      "inverseReading": "OrderStatus is of Order",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Order",
           "isUnique": false,
           "isMandatory": true
+        },
+        {
+          "entityName": "OrderStatus",
+          "isUnique": true,
+          "isMandatory": true
+        }
+      ]
+    },
+    {
+      "reading": "Department has HeadCount",
+      "inverseReading": "HeadCount is of Department",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Department",
+          "isUnique": false,
+          "isMandatory": false
+        },
+        {
+          "entityName": "HeadCount",
+          "isUnique": true,
+          "isMandatory": false
+        }
+      ]
+    },
+    {
+      "reading": "Project is sub-project of Project",
+      "inverseReading": "Project has sub-project Project",
+      "arity": 2,
+      "roles": [
+        {
+          "entityName": "Project",
+          "isUnique": false,
+          "isMandatory": false
+        },
+        {
+          "entityName": "Project",
+          "roleName": "ParentProjectId",
+          "isUnique": false,
+          "isMandatory": false
         }
       ]
     }
@@ -345,14 +490,18 @@ An Ormle-compliant schema is serialized as a JSON document. The following fragme
 
 In this representation:
 
-- The `referenceScheme` on Employee (`"empId"`) and Order (`"orderId"`) identifies the join key columns.
-- The uniqueness of the Order role in "Employee handles Order" establishes $\text{Order} \to \text{Employee}$ (each order is handled by exactly one employee).
-- The mandatoriness of the Order role asserts total participation ($\forall$ Order, $\exists$ Employee).
-- The `alternateReadings` array provides synonymous phrasings for question matching.
-- The `valueDataType` of `"Date"` on OrderDate tells the LLM to use date functions.
-- The `enumValues` on Department provide a closed-world guarantee of valid instances.
-- The `sampleValues` on Employee and Order give concrete examples for disambiguation.
-- The `roleName` of `"ActorId"` on Identity's role in "EventLog records action by Identity" overrides the default FK column name. Without it, the FK column would be `IdentityId`; with it, the generated SQL uses `ActorId`.
+- **Reference schemes.** The `referenceScheme` on Employee (`"empId"`), Order (`"orderId"`), and Project (`"projectId"`) identifies the join key column for each entity.
+- **Namespace.** The optional `namespace` on Employee (`"dbo"`) specifies the database schema that qualifies the table name (e.g., `dbo.Employee`). When present, the fully-qualified name is `namespace.name`. This field is only applicable to non-value-type entities; value types inherit context from their owning entity. Entities with different namespaces but the same name (e.g., `Sales.Customer` and `Finance.Customer`) are treated as distinct.
+- **Functional dependency.** The uniqueness of the Order role in "Employee handles Order" establishes Order &rarr; Employee (each order is handled by exactly one employee).
+- **Total participation.** The mandatoriness of the Order role asserts &forall; Order, &exist; Employee, dictating an `INNER JOIN`.
+- **Alternate readings.** The `alternateReadings` array on "Employee handles Order" provides synonymous phrasings ("Employee processes Order") for question-to-relation matching.
+- **All five data types.** Value types demonstrate every normative data type: `Text` (FirstName), `Date` (OrderDate), `Currency` (OrderTotal), `Number` (HeadCount), and `Boolean` (IsActive). Each type directs the LLM to the appropriate SQL functions and aggregation strategies.
+- **Value type enum.** OrderStatus declares `enumValues` with a `valueDataType` of `Text`, giving the LLM a closed set of valid filter values for status queries.
+- **Entity enum.** Department declares `enumValues` as a first-class entity referenced by other facts, enabling precise `WHERE ... IN (...)` clauses and exhaustive groupings.
+- **Sample values.** Concrete instances on Employee, Order, and Project disambiguate what each entity represents and provide realistic test data.
+- **Self-referential relationship.** "Project is sub-project of Project" references the same entity in both roles. The `roleName` of `"ParentProjectId"` disambiguates the FK column, which would otherwise collide with the entity's own `projectId`.
+- **Cross-entity role name.** "Employee submits Order" creates a second FK from Order to Employee. The `roleName` of `"SubmittedById"` overrides the default column name (`empId`), letting the LLM distinguish the two relationships without ambiguity.
+- **Varied constraint patterns.** The example includes mandatory-both-sides properties (FirstName, OrderDate, OrderTotal, OrderStatus), a mandatory-one-side entity relationship (Employee works for Department), and fully optional relationships (Department has HeadCount, Project self-ref), illustrating how constraint metadata governs JOIN type selection.
 
 ---
 
@@ -360,7 +509,7 @@ In this representation:
 
 The JSON structure defined in Section 7 constitutes the **normative serialization format** of the Ormle Standard. Any system that produces or consumes schemas in this format is subject to the conformance requirements below.
 
-A system is **Ormle-conformant** if it satisfies the following requirements:
+A system is **GRAM-conformant** if it satisfies the following requirements:
 
 1. Every relation in the schema is expressed as a Fact Type with an explicit natural-language reading.
 2. Binary Fact Types include both the forward reading and the inverse reading.
