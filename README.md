@@ -1,22 +1,39 @@
----
-title: "GRAM Specification (v1.0)"
-subtitle: "The Formal Standard for Graph-Rule Analytical Mapping---Deterministic Machine-Reasoning over Relational Structures"
-author: "Ormle"
-date: "March 2026"
-format:
-  typst:
-    papersize: us-letter
-    margin:
-      x: 1in
-      y: 1in
-    toc: true
-    number-sections: false
-  pdf:
-    toc: true
-    number-sections: false
----
+# GRAM Specification (v1.0)
+
+**The Formal Standard for Graph-Rule Analytical Mapping—Deterministic Machine-Reasoning over Relational Structures**
+
+`v1.0` · March 2026
 
 **Status:** Published · **Category:** Technical Specification · **Publisher:** Ormle · **GitHub:** [ormle-dev/ormle-standard](https://github.com/ormle-dev/ormle-standard/) · **Site:** [ormle.com/Standard](https://www.ormle.com/Standard)
+
+---
+
+## Table of Contents
+
+- [Abstract](#abstract)
+- [1. Introduction: The Semantic Gap](#1-introduction-the-semantic-gap)
+- [2. Definitions and Notation](#2-definitions-and-notation)
+  - [2.1 Entities and Value Types](#21-entities-and-value-types)
+  - [2.2 Fact Types](#22-fact-types)
+  - [2.3 Roles](#23-roles)
+  - [2.4 Reference Schemes](#24-reference-schemes)
+  - [2.5 Data Types](#25-data-types)
+  - [2.6 Enumerated Types](#26-enumerated-types)
+  - [2.7 Alternate Readings](#27-alternate-readings)
+  - [2.8 Sample Values](#28-sample-values)
+  - [2.9 Role Names](#29-role-names)
+- [3. The Predicate Calculus of GRAM](#3-the-predicate-calculus-of-gram)
+  - [3.1 Atomic Predicates](#31-atomic-predicates)
+  - [3.2 Inverse Readings](#32-inverse-readings)
+- [4. Constraint Formalization](#4-constraint-formalization)
+  - [4.1 Uniqueness Constraints and Functional Dependencies](#41-uniqueness-constraints-and-functional-dependencies)
+  - [4.2 Mandatoriness and Existence Constraints](#42-mandatoriness-and-existence-constraints)
+  - [4.3 Cardinality Classification](#43-cardinality-classification)
+- [5. The Ontological Failure of SQL DDL](#5-the-ontological-failure-of-sql-ddl)
+- [6. Normative Comparison](#6-normative-comparison)
+- [7. Schema Representation](#7-schema-representation)
+- [8. Conformance](#8-conformance)
+- [References](#references)
 
 ---
 
@@ -475,8 +492,8 @@ In this representation:
 
 - **Reference schemes.** The `referenceScheme` on Employee (`"empId"`), Order (`"orderId"`), and Project (`"projectId"`) identifies the join key column for each entity.
 - **Namespace.** The optional `namespace` on Employee (`"dbo"`) specifies the database schema that qualifies the table name (e.g., `dbo.Employee`). When present, the fully-qualified name is `namespace.name`. This field is only applicable to non-value-type entities; value types inherit context from their owning entity. Entities with different namespaces but the same name (e.g., `Sales.Customer` and `Finance.Customer`) are treated as distinct.
-- **Functional dependency.** The uniqueness of the Order role in "Employee handles Order" establishes Order $\rightarrow$ Employee (each order is handled by exactly one employee).
-- **Total participation.** The mandatoriness of the Order role asserts $\forall$ Order, $\exists$ Employee, dictating an `INNER JOIN`.
+- **Functional dependency.** The uniqueness of the Order role in "Employee handles Order" establishes Order &rarr; Employee (each order is handled by exactly one employee).
+- **Total participation.** The mandatoriness of the Order role asserts &forall; Order, &exist; Employee, dictating an `INNER JOIN`.
 - **Alternate readings.** The `alternateReadings` array on "Employee handles Order" provides synonymous phrasings ("Employee processes Order") for question-to-relation matching.
 - **All five data types.** Value types demonstrate every normative data type: `Text` (FirstName), `Date` (OrderDate), `Currency` (OrderTotal), `Number` (HeadCount), and `Boolean` (IsActive). Each type directs the LLM to the appropriate SQL functions and aggregation strategies.
 - **Value type enum.** OrderStatus declares `enumValues` with a `valueDataType` of `Text`, giving the LLM a closed set of valid filter values for status queries.
