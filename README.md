@@ -1,39 +1,22 @@
-# Ormle Knowledge Graph Specification (v1.0)
-
-**A Formal Foundation for GRAM—Graph-Rule Analytical Mapping—and Deterministic Machine-Reasoning over Relational Structures**
-
-`v1.0` · March 2026
-
-**Status:** Published · **Category:** Technical Specification · **Publisher:** Ormle · **GitHub:** [ormle-dev/ormle-standard](https://github.com/ormle-dev/ormle-standard/) · **Site:** [ormle.com/Standard](https://www.ormle.com/Standard)
-
+---
+title: "GRAM Specification (v1.0)"
+subtitle: "The Formal Standard for Graph-Rule Analytical Mapping---Deterministic Machine-Reasoning over Relational Structures"
+author: "Ormle"
+date: "March 2026"
+format:
+  typst:
+    papersize: us-letter
+    margin:
+      x: 1in
+      y: 1in
+    toc: true
+    number-sections: false
+  pdf:
+    toc: true
+    number-sections: false
 ---
 
-## Table of Contents
-
-- [Abstract](#abstract)
-- [1. Introduction: The Semantic Gap](#1-introduction-the-semantic-gap)
-- [2. Definitions and Notation](#2-definitions-and-notation)
-  - [2.1 Entities and Value Types](#21-entities-and-value-types)
-  - [2.2 Fact Types](#22-fact-types)
-  - [2.3 Roles](#23-roles)
-  - [2.4 Reference Schemes](#24-reference-schemes)
-  - [2.5 Data Types](#25-data-types)
-  - [2.6 Enumerated Types](#26-enumerated-types)
-  - [2.7 Alternate Readings](#27-alternate-readings)
-  - [2.8 Sample Values](#28-sample-values)
-  - [2.9 Role Names](#29-role-names)
-- [3. The Predicate Calculus of GRAM](#3-the-predicate-calculus-of-gram)
-  - [3.1 Atomic Predicates](#31-atomic-predicates)
-  - [3.2 Inverse Readings](#32-inverse-readings)
-- [4. Constraint Formalization](#4-constraint-formalization)
-  - [4.1 Uniqueness Constraints and Functional Dependencies](#41-uniqueness-constraints-and-functional-dependencies)
-  - [4.2 Mandatoriness and Existence Constraints](#42-mandatoriness-and-existence-constraints)
-  - [4.3 Cardinality Classification](#43-cardinality-classification)
-- [5. The Ontological Failure of SQL DDL](#5-the-ontological-failure-of-sql-ddl)
-- [6. Normative Comparison](#6-normative-comparison)
-- [7. Schema Representation](#7-schema-representation)
-- [8. Conformance](#8-conformance)
-- [References](#references)
+**Status:** Published · **Category:** Technical Specification · **Publisher:** Ormle · **GitHub:** [ormle-dev/ormle-standard](https://github.com/ormle-dev/ormle-standard/) · **Site:** [ormle.com/Standard](https://www.ormle.com/Standard)
 
 ---
 
@@ -41,9 +24,9 @@
 
 Large language models are increasingly employed for text-to-SQL generation, yet they operate on SQL Data Definition Language (DDL)—physical metadata that describes *how* data is stored, not *what* it means. This forces the model to infer join semantics, cardinality, participation constraints, and column roles from naming conventions alone, a process that is the primary source of errors in generated SQL.
 
-This document defines the **Ormle Knowledge Graph Specification (v1.0)**, a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. Grounded in Object-Role Modeling (Halpin, 2006) and formalized with predicate calculus, the specification provides the formal foundation for GRAM (Graph-Rule Analytical Mapping)—a semantic layer that bridges the gap between physical DDL and the conceptual schema required for deterministic machine reasoning.
+This document defines the **GRAM Specification (v1.0)**—a formal standard for representing relational database schemas as collections of **Asserted Predicates** rather than physical storage descriptors. Grounded in Object-Role Modeling (Halpin, 2006) and formalized with predicate calculus, **GRAM** (Graph-Rule Analytical Mapping) provides a semantic layer that captures an organization's unique business grammar—the rules, relationships, and vocabulary that define how its data means what it means—bridging the gap between physical DDL and the conceptual schema required for deterministic machine reasoning.
 
-By formalizing entities, fact types, reference schemes, functional dependencies, existence constraints, data types, enumerated domains, alternate readings, sample values, and role names as first-class citizens of the schema, the Ormle Standard enables large language models and automated systems to determine correct join semantics, column operations, and domain boundaries without inferential guesswork. Eliminating structural inference from the reasoning pipeline reduces the error surface to semantic misinterpretation alone, removing the class of errors caused by ambiguous join paths, missing cardinality information, and unnamed foreign key relationships.
+By formalizing entities, fact types, reference schemes, functional dependencies, existence constraints, data types, enumerated domains, alternate readings, sample values, and role names as first-class citizens of the schema, the GRAM specification enables large language models and automated systems to determine correct join semantics, column operations, and domain boundaries without inferential guesswork. Eliminating structural inference from the reasoning pipeline reduces the error surface to semantic misinterpretation alone, removing the class of errors caused by ambiguous join paths, missing cardinality information, and unnamed foreign key relationships.
 
 ---
 
@@ -51,7 +34,7 @@ By formalizing entities, fact types, reference schemes, functional dependencies,
 
 Modern large language models (LLMs) exhibit systematic failure in text-to-SQL tasks because SQL Data Definition Language (DDL) constitutes **physical metadata**: it describes *how* data is stored, not *what* it means. A column definition such as `CustomerID INT NOT NULL` is a physical constraint. It provides no semantic information about the role that `CustomerID` plays in the business domain.
 
-The Ormle Standard addresses this deficiency by representing a database as a collection of **Fact Types**—binary relations expressed as natural-language readings—augmented with formally defined constraints. This representation allows an LLM to *read* the schema rather than *infer* it, moving from stochastic interpretation to the deterministic reasoning model known as **GRAM** (Graph-Rule Analytical Mapping).
+GRAM addresses this deficiency by representing a database as a collection of **Fact Types**—binary relations expressed as natural-language readings—augmented with formally defined constraints. This representation allows an LLM to *read* the schema rather than *infer* it, moving from stochastic interpretation to deterministic reasoning.
 
 ---
 
@@ -69,7 +52,7 @@ A **Fact Type** is a binary relation $R$ defined by a predicate $P$ over two par
 
 $$R = \{ (e_1, e_2) \mid P(e_1, e_2) \text{ is True} \}$$
 
-where $e_i \in (\mathcal{E} \cup \mathcal{V})$. Version 1.0 of the Ormle Standard normatively defines **binary fact types (arity 2)**, which represent relationships between two participants expressed as natural-language readings (e.g., *"Employee handles Order"*). This includes both entity-to-entity relationships and entity-to-value-type properties (e.g., *"Employee has FirstName"*).
+where $e_i \in (\mathcal{E} \cup \mathcal{V})$. Version 1.0 of the GRAM specification normatively defines **binary fact types (arity 2)**, which represent relationships between two participants expressed as natural-language readings (e.g., *"Employee handles Order"*). This includes both entity-to-entity relationships and entity-to-value-type properties (e.g., *"Employee has FirstName"*). These readings constitute the **business grammar** of the domain—the precise vocabulary and sentence structures through which the organization's data tells its own story.
 
 Each specific instance in the database—a **tuple**—is a formal assertion that the predicate defined by the **Reading** is true for a given pair of participants.
 
@@ -91,7 +74,7 @@ The reference scheme is critical for machine reasoning: it tells an LLM which co
 
 ### 2.5 Data Types
 
-Value types in the Ormle Standard carry an explicit `valueDataType` property that declares the semantic data category. The specification defines five normative data types:
+Value types in the GRAM specification carry an explicit `valueDataType` property that declares the semantic data category. The specification defines five normative data types:
 
 | Data Type | SQL Affinity | LLM Significance |
 |-----------|-------------|-----------------|
@@ -105,7 +88,7 @@ DDL alone forces an LLM to infer column semantics from names like `amt` or `dt`.
 
 ### 2.6 Enumerated Types
 
-An **Enumerated Type** declares a closed set of allowed values for an object type. The Ormle Standard supports enumeration on both value types and entity types, serving distinct purposes.
+An **Enumerated Type** declares a closed set of allowed values for an object type. The GRAM specification supports enumeration on both value types and entity types, serving distinct purposes.
 
 **Value type enums** constrain terminal properties. The enumerated values define the complete domain of a column. For example, an `OrderStatus` value type with values `{Pending, Shipped, Delivered}` tells the LLM the exact set of valid filter values for status queries.
 
@@ -154,10 +137,10 @@ When a user defines a fact in a GRAM graph, they define the **membership criteri
 
 $$P(x, y) \quad \text{where } x \in E_1, \; y \in E_2$$
 
-| Ormle Property | Formal Definition | Significance |
+| GRAM Property | Formal Definition | Significance |
 |----------------|-------------------|-------------|
 | `reading` | Atomic Predicate $P(x, y)$ | Defines the semantic truth of the relation |
-| `entityName` | Domain $D$ | Restricts tuple position values |
+| `entityName` | Domain $E_i \in (\mathcal{E} \cup \mathcal{V})$ | Restricts each role to a declared entity or value type |
 | `isUnique` | Functional Dependency $X \to Y$ | Defines cardinality and uniqueness |
 | `isMandatory` | Existence Constraint $\forall x\, \exists y$ | Defines total participation |
 
@@ -492,8 +475,8 @@ In this representation:
 
 - **Reference schemes.** The `referenceScheme` on Employee (`"empId"`), Order (`"orderId"`), and Project (`"projectId"`) identifies the join key column for each entity.
 - **Namespace.** The optional `namespace` on Employee (`"dbo"`) specifies the database schema that qualifies the table name (e.g., `dbo.Employee`). When present, the fully-qualified name is `namespace.name`. This field is only applicable to non-value-type entities; value types inherit context from their owning entity. Entities with different namespaces but the same name (e.g., `Sales.Customer` and `Finance.Customer`) are treated as distinct.
-- **Functional dependency.** The uniqueness of the Order role in "Employee handles Order" establishes Order &rarr; Employee (each order is handled by exactly one employee).
-- **Total participation.** The mandatoriness of the Order role asserts &forall; Order, &exist; Employee, dictating an `INNER JOIN`.
+- **Functional dependency.** The uniqueness of the Order role in "Employee handles Order" establishes Order $\rightarrow$ Employee (each order is handled by exactly one employee).
+- **Total participation.** The mandatoriness of the Order role asserts $\forall$ Order, $\exists$ Employee, dictating an `INNER JOIN`.
 - **Alternate readings.** The `alternateReadings` array on "Employee handles Order" provides synonymous phrasings ("Employee processes Order") for question-to-relation matching.
 - **All five data types.** Value types demonstrate every normative data type: `Text` (FirstName), `Date` (OrderDate), `Currency` (OrderTotal), `Number` (HeadCount), and `Boolean` (IsActive). Each type directs the LLM to the appropriate SQL functions and aggregation strategies.
 - **Value type enum.** OrderStatus declares `enumValues` with a `valueDataType` of `Text`, giving the LLM a closed set of valid filter values for status queries.
@@ -507,7 +490,7 @@ In this representation:
 
 ## 8. Conformance
 
-The JSON structure defined in Section 7 constitutes the **normative serialization format** of the Ormle Standard. Any system that produces or consumes schemas in this format is subject to the conformance requirements below.
+The JSON structure defined in Section 7 constitutes the **normative serialization format** of the GRAM specification. Any system that produces or consumes schemas in this format is subject to the conformance requirements below.
 
 A system is **GRAM-conformant** if it satisfies the following requirements:
 
@@ -520,7 +503,7 @@ A system is **GRAM-conformant** if it satisfies the following requirements:
 7. The serialization format preserves the predicate structure, semantic enrichment (alternate readings, sample values), and is machine-parseable (JSON).
 8. Roles that produce foreign key columns with names differing from the referenced entity's reference scheme declare an explicit `roleName`.
 
-Conformant implementations ensure that any automated system consuming the schema can determine the correct join semantics, cardinality, and participation constraints for every relation—eliminating the structural inference that is the primary source of error in text-to-SQL generation.
+Conformant implementations ensure that any automated system consuming the schema can determine the correct join semantics, cardinality, and participation constraints for every relation—replacing structural inference with a declared business grammar that is the single source of truth for text-to-SQL generation.
 
 ---
 
